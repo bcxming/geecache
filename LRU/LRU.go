@@ -21,7 +21,7 @@ type Value interface{
 }
 
 //实例化
-func New(m_cap int64,cb fun (string ,Value))*Cache{
+func New(m_cap int64,cb func (string ,Value))*Cache{
 	//在C++中算返回局部变量的引用了
 	return &Cache{
 		max_capacity: m_cap,
@@ -31,7 +31,7 @@ func New(m_cap int64,cb fun (string ,Value))*Cache{
 	}
 }
 
-//查找
+//查找  在 Go 语言中，函数可以关联到类型上，形成方法
 func (c *Cache) Get(key string)(value Value,ok bool){
 	if ele,ok:=c.mymap[key];ok{
 		c.mylist.MoveToFront(ele)
@@ -47,8 +47,8 @@ func (c *Cache)RemoveOld(){
 	if ele != nil{
 		c.mylist.Remove(ele)
 		kv:=ele.Value.(*entry)
-		delete(c.mylist,kv.key)
-		c.cur_capacity-= int64(len(kv.key))+int64(kv.value.len())
+		delete(c.mymap,kv.key)
+		c.cur_capacity -= int64(len(kv.key))+int64(kv.value.Len())
 		if c.callback!=nil{
 			c.callback(kv.key,kv.value)
 		}
@@ -60,12 +60,12 @@ func (c *Cache)Add(key string,value Value){
 	if ele,ok:=c.mymap[key];ok{
 		c.mylist.MoveToFront(ele)
 		kv:=ele.Value.(*entry)
-		c.cur_capacity+=int64(value.len())-int64(kv.value.lend())
+		c.cur_capacity+=int64(value.Len())-int64(kv.value.Len())
 		kv.value = value
 	}else{
-		ele:=c.mylist.PushFront(&entry(key,value))
+		ele:=c.mylist.PushFront(&entry{key,value})
 		c.mymap[key] = ele
-		c.cur_capacity+=int64(len(key))+int64(value.len())
+		c.cur_capacity+=int64(len(key))+int64(value.Len())
 	}
 	for c.max_capacity!=0&&c.max_capacity<c.cur_capacity{
 		c.RemoveOld()
@@ -73,7 +73,5 @@ func (c *Cache)Add(key string,value Value){
 }
 
 func (c *Cache) Len()int{
-	return c.mylist.len()
+	return c.mylist.Len()
 }
-
-

@@ -2,12 +2,11 @@ package LRU
 import(
 	"reflect"
 	"testing"
-	"./LRU"
 )
 
 type String string
 
-func (d String) len() int{
+func (d String) Len() int{
 	return len(d)
 }
 
@@ -59,7 +58,7 @@ func TestAdd(t *testing.T) {
 	LRU.Add("key", String("1"))
 	LRU.Add("key", String("111"))
 
-	if LRU.nbytes != int64(len("key")+len("111")) {
+	if LRU.cur_capacity != int64(len("key")+len("111")) {
 		t.Fatal("添加失败")
 	}
 }
